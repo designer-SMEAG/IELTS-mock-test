@@ -69,7 +69,7 @@ input.f,select.f,textarea.f{font-family:Arial,sans-serif;font-weight:bold;font-s
   <button onclick="newRec()">＋ New report</button>
  </div>
  <details id="cfg"><summary>Google Sheet connection</summary>
-  <div class="r" style="margin-top:8px"><input id="url" placeholder="Apps Script web app URL (…/exec)"><input id="pass" type="password" placeholder="Staff passcode" style="max-width:180px"><button onclick="saveCfg()">Connect</button></div>
+  <div class="r" style="margin-top:8px"><input id="url" placeholder="Apps Script web app URL (…/exec)"><input id="pass" type="password" placeholder="Staff passcode" style="max-width:180px"><button id="cbtn" onclick="saveCfg()">Connect</button></div>
  </details>
  <div class="r"><input id="q" placeholder="🔍 Search saved students by name or ID number…" oninput="render()"><button onclick="refresh()">↻ Refresh</button></div>
  <div id="msg"></div>
@@ -145,7 +145,10 @@ const defaults={centre:'CAPITAL01',date:'NOV.11, 2026',type:'ACADEMIC / GENERAL'
 const bands=[];for(let b=0;b<=9;b+=.5)bands.push(b);
 ['L','R','W','S'].forEach(i=>$('#'+i).innerHTML='<option value="">–</option>'+bands.map(b=>`<option value="${b}">${b.toFixed(1)}</option>`).join(''));
 const ls=(k,v)=>{try{if(v===undefined)return JSON.parse(localStorage.getItem(k)||'null');localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}};
+/* >>> PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BETWEEN THE QUOTES BELOW <<< */
+const SHEET_URL='https://script.google.com/macros/s/AKfycbxThNgJpEygyYF_qWR6h4SaI270K7qE6VZkuuJetNPuv3mNW0h4eJ7D4bxZKVld0N-ZpQ/exec';
 let st=ls(KEY)||{},cfg=ls(KEY+'-cfg')||{},recs=ls(KEY+'-recs')||[];
+if(SHEET_URL){cfg.url=SHEET_URL;$('#url').style.display='none';$('#cfg summary').textContent='Staff passcode';$('#cfg').open=!ls(KEY+'-cfg')?.pass;$('#cbtn').style.display='none';let tm;$('#pass').addEventListener('input',()=>{clearTimeout(tm);tm=setTimeout(saveCfg,600)})}
 const say=m=>$('#msg').textContent=m;
 const rb=a=>{const f=Math.floor(a),d=a-f;return d<.25?f:d<.75?f+.5:f+1};
 const cefr=b=>b>=8.5?'C2':b>=7?'C1':b>=5.5?'B2':b>=4?'B1':b>=3?'A2':'A1';
@@ -165,7 +168,7 @@ function newRec(){st={};ls(KEY,st);fill();say('New blank report.')}
 async function api(action,extra){
   const r=await fetch(cfg.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,pass:cfg.pass||'',...extra})});
   const j=await r.json();if(!j.ok)throw new Error(j.error||'Request failed');return j}
-function saveCfg(){cfg={url:$('#url').value.trim(),pass:$('#pass').value};ls(KEY+'-cfg',cfg);refresh()}
+function saveCfg(){cfg={url:SHEET_URL||$('#url').value.trim(),pass:$('#pass').value};ls(KEY+'-cfg',cfg);refresh()}
 async function refresh(){
   if(!cfg.url){render();return say('Not connected to Google Sheet — records are stored on this browser only.')}
   say('Loading…');try{recs=(await api('list')).records;ls(KEY+'-recs',recs);say(recs.length+' saved reports (Google Sheet).')}catch(e){say('Could not load: '+e.message)}render()}
