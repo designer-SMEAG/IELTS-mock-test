@@ -8,7 +8,8 @@
 :root{--g:#d9d9d9;--g2:#bfbfbf;--red:#e4202b}
 *{box-sizing:border-box}
 body{margin:0;background:#0f1218;font-family:Arial,Helvetica,sans-serif;color:#000}
-.tools{max-width:210mm;margin:12px auto;background:#1a1f2b;border:1px solid #2e3647;border-radius:8px;padding:12px;font-size:13px;color:#e6e9f0}
+.layout{display:flex;gap:16px;justify-content:center;align-items:flex-start;padding:12px}
+.tools{width:340px;flex:none;position:sticky;top:12px;margin:0;background:#1a1f2b;border:1px solid #2e3647;border-radius:8px;padding:12px;font-size:13px;color:#e6e9f0}
 .tools h3{margin:0 0 8px;font-size:14px}
 .tools .r{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
 .tools button,.tools input{font:inherit;padding:6px 10px;border:1px solid #3b455a;border-radius:6px;background:#252c3b;color:#e6e9f0}.tools input::placeholder{color:#8b94a8}.tools input:focus{outline:2px solid #4a90e2}
@@ -20,8 +21,9 @@ table.lst{width:100%;border-collapse:collapse;font-size:12px}
 .lst th,.lst td{border-bottom:1px solid #2e3647;padding:5px 6px;text-align:left}
 .lst th{background:#222938;position:sticky;top:0}.lst tr.row{cursor:pointer}.lst tr.row:hover{background:#2b3346}
 .lst td button{padding:2px 8px}
-.wrap{max-height:230px;overflow:auto;border:1px solid #2e3647;border-radius:6px}
-.page{width:210mm;height:296mm;margin:0 auto 20px;background:#fff;padding:11mm 12mm 9mm;box-shadow:0 2px 12px #0003;overflow:hidden;display:flex;flex-direction:column}
+.lst th:nth-child(n+4):nth-child(-n+7),.lst td:nth-child(n+4):nth-child(-n+7){display:none}
+.wrap{max-height:calc(100vh - 320px);min-height:120px;overflow:auto;border:1px solid #2e3647;border-radius:6px}
+.page{flex:none;width:210mm;height:296mm;margin:0;background:#fff;padding:11mm 12mm 9mm;box-shadow:0 2px 12px #0003;overflow:hidden;display:flex;flex-direction:column}
 h1{margin:0;color:var(--red);font-size:50px;font-weight:900;letter-spacing:-1px;line-height:1}
 .row{display:flex;align-items:center;gap:8px}
 .t{font-size:15px;font-weight:bold}
@@ -50,10 +52,11 @@ input.f,select.f,textarea.f{font-family:Arial,sans-serif;font-weight:bold;font-s
 .photo{width:32mm;height:40mm;border:1px solid #000;flex:none;cursor:pointer;display:flex;align-items:center;justify-content:center;text-align:center;font-size:9px;color:#888;overflow:hidden;background:#fff}
 .photo img{width:100%;height:100%;object-fit:cover}
 .red{color:var(--red);font-weight:bold;text-align:center;font-size:11.5px;line-height:1.4}
+@media(max-width:699px){.layout{flex-direction:column;align-items:center}.tools{position:static;width:210mm;max-width:100%}}
 @page{size:A4;margin:0}
 @media print{
  body{background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
- .tools{display:none!important}
+ .tools{display:none!important}.layout{display:block;padding:0;zoom:1!important}
  .page{margin:0;box-shadow:none}
  .photo.empty{border-color:#000}.photo.empty span{display:none}
 }
@@ -61,6 +64,7 @@ input.f,select.f,textarea.f{font-family:Arial,sans-serif;font-weight:bold;font-s
 </head>
 <body>
 
+<div class="layout">
 <div class="tools">
  <h3>Report tools</h3>
  <div class="r">
@@ -138,6 +142,7 @@ input.f,select.f,textarea.f{font-family:Arial,sans-serif;font-weight:bold;font-s
   <div class="red">This is SMEAG internal mock test report and is NOT an official IELTS Test Report Form (TRF).<br>It carries no validity for visa, immigration, or admissions purposes.</div>
  </div>
 </div>
+</div>
 
 <script>
 const KEY='smeag-ielts-v2',$=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
@@ -188,6 +193,8 @@ function loadRec(i){st={...recs[i]};delete st.rid;delete st.saved;delete st.over
 async function delRec(i){const r=recs[i];if(!confirm('Delete this saved report?'))return;recs.splice(i,1);ls(KEY+'-recs',recs);render();
   if(cfg.url)try{await api('delete',{rid:r.rid});say('Deleted.')}catch(e){say('Sheet delete failed: '+e.message)}}
 $('#url').value=cfg.url||'';$('#pass').value=cfg.pass||'';
+function fit(){const w=innerWidth,L=$('.layout');L.style.zoom=w>=700?Math.min(1,(w-8)/1200):1}
+addEventListener('resize',fit);fit();
 fill();refresh();
 </script>
 </body>
