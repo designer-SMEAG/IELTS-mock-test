@@ -2,25 +2,25 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SMEAG IELTS Mock Test Report</title>
 <style>
 :root{--g:#d9d9d9;--g2:#bfbfbf;--red:#e4202b}
 *{box-sizing:border-box}
-body{margin:0;background:#e9e9ec;font-family:Arial,Helvetica,sans-serif;color:#000}
-.tools{max-width:210mm;margin:12px auto;background:#fff;border:1px solid #ccc;border-radius:8px;padding:12px;font-size:13px}
+body{margin:0;background:#0f1218;font-family:Arial,Helvetica,sans-serif;color:#000}
+.tools{max-width:210mm;margin:12px auto;background:#1a1f2b;border:1px solid #2e3647;border-radius:8px;padding:12px;font-size:13px;color:#e6e9f0}
 .tools h3{margin:0 0 8px;font-size:14px}
 .tools .r{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
-.tools button,.tools input{font:inherit;padding:6px 10px;border:1px solid #999;border-radius:6px;background:#fff}
+.tools button,.tools input{font:inherit;padding:6px 10px;border:1px solid #3b455a;border-radius:6px;background:#252c3b;color:#e6e9f0}.tools input::placeholder{color:#8b94a8}.tools input:focus{outline:2px solid #4a90e2}
 .tools button{cursor:pointer}.tools input{flex:1;min-width:150px}
 .tools .pri{background:var(--red);color:#fff;border-color:var(--red);font-weight:bold}
 .tools details{margin-bottom:8px}.tools summary{cursor:pointer;font-weight:bold}
-#msg{font-size:12px;color:#555;min-height:16px}
+#msg{font-size:12px;color:#9aa4b8;min-height:16px}
 table.lst{width:100%;border-collapse:collapse;font-size:12px}
-.lst th,.lst td{border-bottom:1px solid #e3e3e3;padding:5px 6px;text-align:left}
-.lst th{background:#f4f4f4}.lst tr.row{cursor:pointer}.lst tr.row:hover{background:#fff3ec}
+.lst th,.lst td{border-bottom:1px solid #2e3647;padding:5px 6px;text-align:left}
+.lst th{background:#222938;position:sticky;top:0}.lst tr.row{cursor:pointer}.lst tr.row:hover{background:#2b3346}
 .lst td button{padding:2px 8px}
-.wrap{max-height:230px;overflow:auto;border:1px solid #e3e3e3;border-radius:6px}
+.wrap{max-height:230px;overflow:auto;border:1px solid #2e3647;border-radius:6px}
 .page{width:210mm;height:296mm;margin:0 auto 20px;background:#fff;padding:11mm 12mm 9mm;box-shadow:0 2px 12px #0003;overflow:hidden;display:flex;flex-direction:column}
 h1{margin:0;color:var(--red);font-size:50px;font-weight:900;letter-spacing:-1px;line-height:1}
 .row{display:flex;align-items:center;gap:8px}
@@ -52,7 +52,7 @@ input.f,select.f,textarea.f{font-family:Arial,sans-serif;font-weight:bold;font-s
 .red{color:var(--red);font-weight:bold;text-align:center;font-size:11.5px;line-height:1.4}
 @page{size:A4;margin:0}
 @media print{
- body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ body{background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
  .tools{display:none!important}
  .page{margin:0;box-shadow:none}
  .photo.empty{border-color:#000}.photo.empty span{display:none}
@@ -182,7 +182,7 @@ async function saveRec(){
 function render(){
   const q=$('#q').value.trim().toLowerCase();
   const rows=recs.filter(r=>!q||[r.family,r.first,r.english,r.sid].join(' ').toLowerCase().includes(q));
-  $('#tb').innerHTML=rows.length?rows.map(r=>{const i=recs.indexOf(r);return`<tr class="row" onclick="loadRec(${i})"><td>${esc(r.english||'')} ${esc(r.family||'')} ${esc(r.first||'')}</td><td>${esc(r.sid)}</td><td>${esc(r.date)}</td><td>${esc(r.L)}</td><td>${esc(r.R)}</td><td>${esc(r.W)}</td><td>${esc(r.S)}</td><td><b>${esc(r.overall)}</b></td><td>${esc(r.cefr)}</td><td><button onclick="event.stopPropagation();delRec(${i})" title="Delete">✕</button></td></tr>`}).join(''):'<tr><td colspan="10" style="color:#888">No saved reports found.</td></tr>'}
+  $('#tb').innerHTML=rows.length?rows.map(r=>{const i=recs.indexOf(r);return`<tr class="row" onclick="loadRec(${i})"><td>${esc(r.english||'')} ${esc(r.family||'')} ${esc(r.first||'')}</td><td>${esc(r.sid)}</td><td>${esc(r.date)}</td><td>${esc(r.L)}</td><td>${esc(r.R)}</td><td>${esc(r.W)}</td><td>${esc(r.S)}</td><td><b>${esc(r.overall)}</b></td><td>${esc(r.cefr)}</td><td><button onclick="event.stopPropagation();delRec(${i})" title="Delete">✕</button></td></tr>`}).join(''):'<tr><td colspan="10" style="color:#8b94a8">No saved reports found.</td></tr>'}
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function loadRec(i){st={...recs[i]};delete st.rid;delete st.saved;delete st.overall;delete st.cefr;ls(KEY,st);fill();say('Loaded — ready to print.');scrollTo({top:document.body.scrollHeight,behavior:'smooth'})}
 async function delRec(i){const r=recs[i];if(!confirm('Delete this saved report?'))return;recs.splice(i,1);ls(KEY+'-recs',recs);render();
